@@ -8,6 +8,7 @@
    	file, directory utility module <files.rst>
    	winzip utility module <winzip.rst>
 
+.. include:: about.rst
 
 Indices and tables
 ==================

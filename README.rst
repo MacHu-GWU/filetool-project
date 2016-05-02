@@ -1,5 +1,6 @@
 Welcome to the filetool Documentation
-===================================
+=====================================
+Tool set helps you **select, filter, sort, archive** your files.
 
 **Quick links**:
 

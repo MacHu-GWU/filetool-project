@@ -12,6 +12,9 @@ from filetool.files import WinFile, WinDir, FileCollection
 
 
 class UnittestWinFile(unittest.TestCase):
+    def setUp(self):
+        self.winfile = WinFile("test.txt")
+        
     def test_initialize(self):
         """测试WinFile多种初始化方式的实现。
         """
@@ -62,8 +65,25 @@ class UnittestWinFile(unittest.TestCase):
         winfile.rename(new_fname="test")
         d = winfile.to_dict()
         self.assertEqual(d["fname"], "test")
-
-
+    
+    def test_copy(self):
+        winfile1 = WinFile("test.txt")
+        winfile2 = winfile1.copy()
+        self.assertNotEqual(id(winfile1), id(winfile2))
+        
+    def test_copy_to_and_remove(self):
+        winfile1 = WinFile("test.txt")
+        winfile2 = winfile1.copy() # create a copy
+        winfile2.update(new_fname="test-copy") # change file name
+        
+        self.assertFalse(winfile2.exists()) # not exists
+        winfile1.copy_to(winfile2.abspath) # copy to new file
+        self.assertTrue(winfile2.exists()) # now exists
+        self.assertTrue(winfile2.isfile()) # now exists
+        winfile2.delete() # delete the new file
+        self.assertFalse(winfile2.exists()) # not exists
+         
+    
 class UnittestWinDir(unittest.TestCase):
     def test_detail(self):
         windir = WinDir("testdir")
@@ -87,22 +107,22 @@ class UnittestFileCollection(unittest.TestCase):
     def setUp(self):
         self._dir = "testdir"
 
-#     def test_yield_file(self):            
-#         print("{:=^100}".format("yield_all_file_path"))
-#         for abspath in FileCollection.yield_all_file_path(self._dir):
-#             print(abspath)
-#            
-#         print("{:=^100}".format("yield_all_winfile"))
-#         for winfile in FileCollection.yield_all_winfile(self._dir):
-#             print(repr(winfile))
-#            
-#         print("{:=^100}".format("yield_all_top_file_path"))
-#         for abspath in FileCollection.yield_all_top_file_path(self._dir):
-#             print(abspath)
-#            
-#         print("{:=^100}".format("yield_all_top_winfile"))
-#         for winfile in FileCollection.yield_all_top_winfile(self._dir):
-#             print(repr(winfile))
+    def test_yield_file(self):            
+        print("{:=^100}".format("yield_all_file_path"))
+        for abspath in FileCollection.yield_all_file_path(self._dir):
+            print(abspath)
+            
+        print("{:=^100}".format("yield_all_winfile"))
+        for winfile in FileCollection.yield_all_winfile(self._dir):
+            print(repr(winfile))
+            
+        print("{:=^100}".format("yield_all_top_file_path"))
+        for abspath in FileCollection.yield_all_top_file_path(self._dir):
+            print(abspath)
+            
+        print("{:=^100}".format("yield_all_top_winfile"))
+        for winfile in FileCollection.yield_all_top_winfile(self._dir):
+            print(repr(winfile))
             
     def test_from_path(self):
         fc = FileCollection.from_path(self._dir)
@@ -190,8 +210,7 @@ class UnittestFileCollection(unittest.TestCase):
         winfile = WinFile("test_files.py")
         WinFile.set_initialize_mode(complexity=2)
                      
-        res = FileCollection.from_path_by_md5(
-            winfile.md5, os.getcwd())
+        res = FileCollection.from_path_by_md5(os.getcwd(), winfile.md5)
         self.assertEqual(res[0].basename, "test_files.py")
  
     def test_add_and_remove(self):
@@ -242,10 +261,10 @@ class UnittestFileCollection(unittest.TestCase):
         src = "testdir"
         dst = "testdir_mirror"
         FileCollection.create_fake_mirror(src, dst)
-  
+   
     def test_show_big_file(self):
         FileCollection.show_big_file(self._dir, 1000)
-  
+   
     def test_show_patterned_file(self):
         FileCollection.show_patterned_file(self._dir, ["image",])
 
