@@ -107,29 +107,31 @@ class UnittestFileCollection(unittest.TestCase):
     def setUp(self):
         self._dir = "testdir"
 
-    def test_yield_file(self):            
+    def test_yield_file(self):
         print("{:=^100}".format("yield_all_file_path"))
         for abspath in FileCollection.yield_all_file_path(self._dir):
             print(abspath)
-            
+             
         print("{:=^100}".format("yield_all_winfile"))
         for winfile in FileCollection.yield_all_winfile(self._dir):
             print(repr(winfile))
-            
+             
         print("{:=^100}".format("yield_all_top_file_path"))
         for abspath in FileCollection.yield_all_top_file_path(self._dir):
             print(abspath)
-            
+             
         print("{:=^100}".format("yield_all_top_winfile"))
         for winfile in FileCollection.yield_all_top_winfile(self._dir):
             print(repr(winfile))
             
     def test_from_path(self):
         fc = FileCollection.from_path(self._dir)
+        basename_list = [winfile.basename for winfile in fc.iterfiles()]
+        basename_list.sort() 
         expect = ["root_file.txt", "root_image.jpg", 
                   "sub_file.txt", "sub_image.jpg"]
-        for winfile, basename in zip(fc.iterfiles(), expect):
-            self.assertEqual(winfile.basename, basename)
+        expect.sort()
+        self.assertListEqual(basename_list, expect)
     
     def test_from_path_by_criterion(self):
         def image_filter(winfile):
@@ -141,69 +143,88 @@ class UnittestFileCollection(unittest.TestCase):
         fc_yes, fc_no = FileCollection.from_path_by_criterion(
             self._dir, image_filter, keepboth=True)
         
+        basename_list = [winfile.basename for winfile in fc_yes.iterfiles()]
+        basename_list.sort()   
         expect_yes = ["root_image.jpg", "sub_image.jpg"]
-        expect_no = ["root_file.txt", "sub_file.txt"]
+        expect_yes.sort()
+        self.assertListEqual(basename_list, expect_yes)
         
-        for winfile, basename in zip(fc_yes.iterfiles(), expect_yes):
-            self.assertEqual(winfile.basename, basename)
-        for winfile, basename in zip(fc_no.iterfiles(), expect_no):
-            self.assertEqual(winfile.basename, basename)
+        basename_list = [winfile.basename for winfile in fc_no.iterfiles()]
+        basename_list.sort()   
+        expect_no = ["root_file.txt", "sub_file.txt"]
+        expect_no.sort()
     
     def test_from_path_except(self):
         """测试from_path_except方法是否能正常工作。
         """
         fc = FileCollection.from_path_except(
             "testdir", ignore=["subfolder"])
+        basename_list = [winfile.basename for winfile in fc.iterfiles()]
+        basename_list.sort()        
         expect = ["root_file.txt", "root_image.jpg"]
-        for winfile, basename in zip(fc.iterfiles(), expect):
-            self.assertEqual(winfile.basename, basename)
+        expect.sort()        
+        self.assertListEqual(basename_list, expect)
 
         fc = FileCollection.from_path_except(
             "testdir", ignore_ext=[".jpg"])
+        basename_list = [winfile.basename for winfile in fc.iterfiles()]
+        basename_list.sort()        
         expect = ["root_file.txt", "sub_file.txt"]
-        for winfile, basename in zip(fc.iterfiles(), expect):
-            self.assertEqual(winfile.basename, basename)
+        expect.sort()        
+        self.assertListEqual(basename_list, expect)
 
         fc = FileCollection.from_path_except(
             "testdir", ignore_pattern=["image"])
+        basename_list = [winfile.basename for winfile in fc.iterfiles()]
+        basename_list.sort()
         expect = ["root_file.txt", "sub_file.txt"]
-        for winfile, basename in zip(fc.iterfiles(), expect):
-            self.assertEqual(winfile.basename, basename)
+        expect.sort()
+        self.assertListEqual(basename_list, expect)
 
     def test_from_path_by_pattern(self):
         """测试from_path_by_pattern方法是否能正常工作。
         """
         fc = FileCollection.from_path_by_pattern(
             "testdir", pattern=["sub"])
+        basename_list = [winfile.basename for winfile in fc.iterfiles()]
+        basename_list.sort()
         expect = ["sub_file.txt", "sub_image.jpg"]
-        for winfile, basename in zip(fc.iterfiles(), expect):
-            self.assertEqual(winfile.basename, basename)
+        expect.sort()
+        self.assertListEqual(basename_list, expect)
 
     def test_from_path_by_size(self):
         """测试from_from_path_by_size方法是否能正常工作。
         """
         fc = FileCollection.from_path_by_size("testdir", min_size=1024)
+        basename_list = [winfile.basename for winfile in fc.iterfiles()]
+        basename_list.sort()
         expect = ["root_image.jpg", "sub_image.jpg"]
-        for winfile, basename in zip(fc.iterfiles(), expect):
-            self.assertEqual(winfile.basename, basename)
+        expect.sort()
+        self.assertListEqual(basename_list, expect)
             
         fc = FileCollection.from_path_by_size("testdir", max_size=1024)
+        basename_list = [winfile.basename for winfile in fc.iterfiles()]
+        basename_list.sort()
         expect = ["root_file.txt", "sub_file.txt"]
-        for winfile, basename in zip(fc.iterfiles(), expect):
-            self.assertEqual(winfile.basename, basename)    
+        expect.sort()
+        self.assertListEqual(basename_list, expect)
 
     def test_from_path_by_ext(self):
         """测试from_path_by_ext方法是否能正常工作。
         """
         fc = FileCollection.from_path_by_ext("testdir", ext=".jpg")
+        basename_list = [winfile.basename for winfile in fc.iterfiles()]
+        basename_list.sort()
         expect = ["root_image.jpg", "sub_image.jpg"]
-        for winfile, basename in zip(fc.iterfiles(), expect):
-            self.assertEqual(winfile.basename, basename)
+        expect.sort()
+        self.assertListEqual(basename_list, expect)
             
         fc = FileCollection.from_path_by_ext("testdir", ext=[".txt"])
+        basename_list = [winfile.basename for winfile in fc.iterfiles()]
+        basename_list.sort()
         expect = ["root_file.txt", "sub_file.txt"]
-        for winfile, basename in zip(fc.iterfiles(), expect):
-            self.assertEqual(winfile.basename, basename)    
+        expect.sort()
+        self.assertListEqual(basename_list, expect)
 
     def test_from_path_by_md5(self):
         WinFile.set_initialize_mode(complexity=3)
