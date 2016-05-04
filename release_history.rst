@@ -1,8 +1,8 @@
 Release and Version History
 ===========================
 
-0.0.3 (TODO)
-~~~~~~~~~~~~~~~~~~
+0.0.4 (TODO)
+~~~~~~~~~~~~
 **Features and Improvements**
 
 **Minor Improvements**
@@ -10,6 +10,13 @@ Release and Version History
 **Bugfixes**
 
 **Miscellaneous**
+
+
+0.0.3 (2016-05-04)
+~~~~~~~~~~~~~~~~~~
+**Bugfixes**
+
+- Continue to fix a bug FileCollection.create_fake_mirror is not working in Linux.
 
 
 0.0.2 (2016-05-02)

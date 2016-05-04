@@ -1221,7 +1221,11 @@ class FileCollection(object):
         file_to_create = list()
 
         for current_folder, _, file_list in os.walk(src):
-            new_folder = os.path.join(dst, os.path.relpath(current_folder, src))
+            relpath = os.path.relpath(current_folder, src)
+            if relpath == ".": 
+                new_folder = dst
+            else:
+                new_folder = os.path.join(dst, relpath)
             folder_to_create.append(new_folder)
             for basename in file_list:
                 file_to_create.append(os.path.join(new_folder, basename))
