@@ -7,6 +7,7 @@
 
    	file, directory utility module <files.rst>
    	winzip utility module <winzip.rst>
+   	backup utility module <backup.rst>
 
 .. include:: about.rst
 

@@ -158,7 +158,7 @@ class UnittestFileCollection(unittest.TestCase):
         """测试from_path_except方法是否能正常工作。
         """
         fc = FileCollection.from_path_except(
-            "testdir", ignore=["subfolder"])
+            "testdir", ignore=["subfolder",])
         basename_list = [winfile.basename for winfile in fc.iterfiles()]
         basename_list.sort()        
         expect = ["root_file.txt", "root_image.jpg"]

@@ -6,7 +6,7 @@ This is a programmatic windows explorer behaviors implementation. A lots of
 useful recipe help you easily control file, directory, file name, select,
 rename, etc...
 
-file, directory class
+``file``, ``directory``, ``collection of files`` class
 """
 
 from __future__ import print_function
@@ -70,7 +70,7 @@ class WinFile(object):
     init_mode = 2
 
     def __init__(self, abspath):
-        if os.path.isfile(abspath): # 确保这是一个文件而不是目录
+        if os.path.isfile(abspath):  # 确保这是一个文件而不是目录
             self.abspath = os.path.abspath(abspath)
             self.initialize()
         else:
@@ -106,11 +106,11 @@ class WinFile(object):
     @staticmethod
     def set_initialize_mode(complexity=2):
         """Set initialization mode. Default is slow mode.
-        
+
         - 1: fast mode, only file name relative
         - 2: regular mode, atime, ctime, mtime, size_on_disk
         - 3: slow mode, md5 checksum
-        
+
         **中文文档**
 
         设置WinFile类的全局变量, 指定WinFile.initialize方法所绑定的初始化方式。
@@ -146,8 +146,8 @@ class WinFile(object):
         - 文件占据磁盘大小
         - 文件的哈希值
         """
-        self.dirname, self.basename = os.path.split(self.abspath) # 目录名, 文件名
-        self.fname, self.ext = os.path.splitext(self.basename) # 纯文件名, 文件扩展名
+        self.dirname, self.basename = os.path.split(self.abspath)  # 目录名, 文件名
+        self.fname, self.ext = os.path.splitext(self.basename)  # 纯文件名, 文件扩展名
         self.ext = self.ext.lower()
 
         self.size_on_disk = os.path.getsize(self.abspath)
@@ -160,7 +160,7 @@ class WinFile(object):
 
         # 最后一次修改的时间
         self.mtime = datetime.fromtimestamp(os.path.getmtime(self.abspath))
-        self.md5 = md5file(self.abspath) # 文件的哈希值
+        self.md5 = md5file(self.abspath)  # 文件的哈希值
 
     def level2_initialize(self):
         """Load abspath, dirname, basename, fname, ext, atime, ctime, mtime,
@@ -180,8 +180,8 @@ class WinFile(object):
         - modify time
         - 文件占据磁盘大小
         """
-        self.dirname, self.basename = os.path.split(self.abspath) # 目录名, 文件名
-        self.fname, self.ext = os.path.splitext(self.basename) # 纯文件名, 文件扩展名
+        self.dirname, self.basename = os.path.split(self.abspath)  # 目录名, 文件名
+        self.fname, self.ext = os.path.splitext(self.basename)  # 纯文件名, 文件扩展名
         self.ext = self.ext.lower()
 
         self.size_on_disk = os.path.getsize(self.abspath)
@@ -238,7 +238,7 @@ class WinFile(object):
         return hash(self.abspath)
 
     def to_dict(self):
-        """Convert :class:`WinFile` to dictionary. 
+        """Convert :class:`WinFile` to dictionary.
         """
         d = dict()
         for attr in self.__slots__:
@@ -247,25 +247,25 @@ class WinFile(object):
             except AttributeError:
                 pass
         return d
-    
+
     def update(self, new_dirname=None, new_fname=None, new_ext=None):
         """Update property, automatically update relative property.
-        
+
         :param new_dirname: new dirname
         :param new_fname: new fname
         :param new_ext: new ext
-        
+
         **中文文档**
-        
+
         更新WinFile的属性。更新一个, 也同时更新其他相关的属性。例如更新
         extension时, 也自动更新basename和abspath。
         """
         if new_dirname:
             self.dirname = new_dirname
-            
+
         if new_fname:
             self.fname = new_fname
-            
+
         if new_ext:
             self.ext = new_ext
 
@@ -276,10 +276,10 @@ class WinFile(object):
         """Create a copy of this :class:`WinFile` instance.
         """
         return copy.deepcopy(self)
-    
+
     def copy_to(self, dst, overwrite=False):
         """Copy this file to another place.
-        
+
         :param dst: copy-to destination
         :param overwrite: if True, silently overwrite output file
         """
@@ -288,7 +288,7 @@ class WinFile(object):
                 raise FileExistsError("%s" % dst)
         with open(self.abspath, "rb") as f_in, open(dst, "wb") as f_out:
             f_out.write(f_in.read())
-        
+
     def delete(self):
         """Delete this winfile.
         """
@@ -296,11 +296,11 @@ class WinFile(object):
 
     def rename(self, new_dirname=None, new_fname=None, new_ext=None):
         """Rename the dirname, fname, extension or their combinations.
-        
+
         :param new_dirname: new dirname
         :param new_fname: new fname
         :param new_ext: new ext
-        
+
         **中文文档**
 
         对文件的父目录名, 纯文件名, 扩展名, 或它们的组合进行修改。
@@ -311,7 +311,7 @@ class WinFile(object):
             new_dirname = os.path.abspath(new_dirname)
         if not new_fname:
             new_fname = self.fname
-        if new_ext: # 检查新文件名的扩展名格式是否
+        if new_ext:  # 检查新文件名的扩展名格式是否
             if not new_ext.startswith("."):
                 raise ValueError("File extension must in format .ext, "
                                  "for example: .jpg, .mp3")
@@ -332,7 +332,7 @@ class WinFile(object):
     #--- Boolean method ---
     def isfile(self):
         return os.path.isfile(self.abspath)
-    
+
     def exists(self):
         return os.path.exists(self.abspath)
 
@@ -341,7 +341,7 @@ class WinDir(object):
     """Represent a directory.
 
     - self.size_total: total size of all files
-    - self.size_current_total: total size of all files, not include file in 
+    - self.size_current_total: total size of all files, not include file in
       subfolder
 
     - self.num_folder_total: number of all directory
@@ -371,8 +371,9 @@ class WinDir(object):
         "size_total", "num_folder_total", "num_file_total",
         "size_current", "num_folder_current", "num_file_current",
     ]
+
     def __init__(self, abspath):
-        if os.path.isdir(abspath): # 确保这是一个目录而不是文件
+        if os.path.isdir(abspath):  # 确保这是一个目录而不是文件
             self.abspath = os.path.abspath(abspath)
             self.dirname, self.basename = os.path.split(self.abspath)
             self.get_detail()
@@ -404,13 +405,15 @@ class WinDir(object):
             self.num_folder_total += len(folderlist)
             self.num_file_total += len(fnamelist)
             for fname in fnamelist:
-                self.size_total += os.path.getsize(os.path.join(current_dir, fname))
+                self.size_total += os.path.getsize(
+                    os.path.join(current_dir, fname))
 
         current_dir, folderlist, fnamelist = next(os.walk(self.abspath))
         self.num_folder_current = len(folderlist)
         self.num_file_current = len(fnamelist)
         for fname in fnamelist:
-            self.size_current += os.path.getsize(os.path.join(current_dir, fname))
+            self.size_current += os.path.getsize(
+                os.path.join(current_dir, fname))
 
     def __str__(self):
         return self.abspath
@@ -474,11 +477,12 @@ class FileCollection(object):
     WinFile的专用容器, 主要用于方便的从文件夹中选取文件, 筛选文件, 并对指定文件集排序。
     当然, 可以以迭代器的方式对容器内的文件对象进行访问。
     """
+
     def __init__(self, path_or_path_list=list()):
-        self.files = OrderedDict() # {文件绝对路径: 包含各种详细信息的WinFile对象}
-        
+        self.files = OrderedDict()  # {文件绝对路径: 包含各种详细信息的WinFile对象}
+
         path_or_path_list = self._preprocess(path_or_path_list)
-                    
+
         for abspath in path_or_path_list:
             winfile = WinFile(abspath)
             self.files[winfile.abspath] = winfile
@@ -486,18 +490,18 @@ class FileCollection(object):
     @staticmethod
     def _preprocess(path_or_path_list):
         """Preprocess input argument, whether if it is:
-        
+
         1. abspath
         2. WinFile instance
         3. WinDir instance
         4. list or set of any of them
-        
-        It returns list of path.        
-        
+
+        It returns list of path.
+
         :return path_or_path_list: always return list of path
-        
+
         **中文文档**
-        
+
         预处理输入参数, 使得无论是绝对路径, WinFile, WinDir 或是他们的列表, 都
         能被FileCollection的方法所接受。
         """
@@ -505,7 +509,7 @@ class FileCollection(object):
             path_or_path_list = [path_or_path_list, ]
         else:
             path_or_path_list = set(path_or_path_list)
-            
+
         path_or_path_list = [str(path) for path in path_or_path_list]
         return path_or_path_list
 
@@ -514,10 +518,10 @@ class FileCollection(object):
             return "*** Empty FileCollection ***"
         try:
             return "\n".join(
-                ["*** File Collection ***",] + list(self.order))
+                ["*** File Collection ***", ] + list(self.order))
         except:
             return "\n".join(
-                ["*** File Collection ***",] + list(self.files.keys()))
+                ["*** File Collection ***", ] + list(self.files.keys()))
 
     def __len__(self):
         return len(self.files)
@@ -537,11 +541,11 @@ class FileCollection(object):
     def __contains__(self, item):
         """Test if winfile in this file collection.
         """
-        if isinstance(item, str): # abspath
+        if isinstance(item, str):  # abspath
             abspath = os.path.abspath(item)
-        elif isinstance(item, WinFile): # WinFile
+        elif isinstance(item, WinFile):  # WinFile
             abspath = item.abspath
-        else: # invalid type
+        else:  # invalid type
             raise TypeError
 
         if abspath in self.files:
@@ -558,7 +562,7 @@ class FileCollection(object):
             winfile = abspath_or_winfile
         else:
             raise TypeError
-        
+
         if winfile.abspath in self.files:
             prt("'%s' already in this collections" % winfile, enable_verbose)
         else:
@@ -578,7 +582,7 @@ class FileCollection(object):
             del self.files[winfile.abspath]
         except KeyError:
             if enable_verbose:
-                prt("'%s' are not in this file collections" % winfile, 
+                prt("'%s' are not in this file collections" % winfile,
                     enable_verbose)
 
     @property
@@ -611,7 +615,6 @@ class FileCollection(object):
         """Default iterator is to yield absolute paht only.
         """
         return self.iterpaths()
-
 
     @staticmethod
     def yield_all_file_path(dir_abspath):
@@ -772,7 +775,7 @@ class FileCollection(object):
         FileCollection。
         """
         path_or_path_list = FileCollection._preprocess(path_or_path_list)
-        
+
         if keepboth:
             fc_yes, fc_no = FileCollection(), FileCollection()
             for dir_path in path_or_path_list:
@@ -792,7 +795,7 @@ class FileCollection(object):
 
     @staticmethod
     def from_path_except(path_or_path_list,
-            ignore=list(), ignore_ext=list(), ignore_pattern=list()):
+                         ignore=None, ignore_ext=None, ignore_pattern=None):
         """Create a new FileCollection, and select all files except file
         matching ignore-rule::
 
@@ -813,41 +816,56 @@ class FileCollection(object):
         选择dir_path下的所有文件, 在ignore, ignore_ext, ignore_pattern中所定义
         的文件将被排除在外。
         """
+        if ignore is None:
+            ignore = list()
+        elif isinstance(ignore, str_type):
+            ignore = [ignore, ]
+
+        if ignore_ext is None:
+            ignore_ext = list()
+        elif isinstance(ignore_ext, str_type):
+            ignore_ext = [ignore_ext, ]
+
+        if ignore_pattern is None:
+            ignore_pattern = list()
+        elif isinstance(ignore_pattern, str_type):
+            ignore_pattern = [ignore_pattern, ]
+
         path_or_path_list = FileCollection._preprocess(path_or_path_list)
-        
+
         ignore = [i.lower() for i in ignore]
         ignore_ext = [i.lower() for i in ignore_ext]
         ignore_pattern = [i.lower() for i in ignore_pattern]
-        
+
         fc = FileCollection()
         for dir_path in path_or_path_list:
             def filter(winfile):
                 relpath = os.path.relpath(winfile.abspath, dir_path).lower()
-    
+
                 # exclude ignore
                 for path in ignore:
                     if relpath.startswith(path):
                         return False
-    
+
                 # exclude ignore extension
                 if winfile.ext in ignore_ext:
                     return False
-    
+
                 # exclude ignore pattern
                 for pattern in ignore_pattern:
                     if pattern in relpath:
                         return False
-    
+
                 return True
-            
+
             for winfile in FileCollection.yield_all_winfile(dir_path):
                 if filter(winfile):
                     fc.files.setdefault(winfile.abspath, winfile)
-            
+
         return fc
 
     @staticmethod
-    def from_path_by_pattern(path_or_path_list, pattern=list()):
+    def from_path_by_pattern(path_or_path_list, pattern=None):
         """Create a new FileCollection, and select all files except file
         matching ignore-rule::
 
@@ -864,10 +882,15 @@ class FileCollection(object):
 
         选择dir_path下的所有文件的相对路径中包含有pattern的文件。
         """
+        if pattern is None:
+            pattern = list()
+        elif isinstance(pattern, str_type):
+            pattern = [pattern, ]
+
         path_or_path_list = FileCollection._preprocess(path_or_path_list)
-        
+
         pattern = [i.lower() for i in pattern]
-        
+
         fc = FileCollection()
         for dir_path in path_or_path_list:
             def filter(winfile):
@@ -876,7 +899,7 @@ class FileCollection(object):
                     if p in relpath:
                         return True
                 return False
-            
+
             for winfile in FileCollection.yield_all_winfile(dir_path):
                 if filter(winfile):
                     fc.files.setdefault(winfile.abspath, winfile)
@@ -900,17 +923,17 @@ class FileCollection(object):
             # select by file size from 1MB to 100MB
             fc = FileCollection.from_path_by_size(
                 dir_path, min_size=1024*1024, max_size=100*1024*1024)
-        
+
         :param path_or_path_list: absolute dir path, WinDir instance, list of
           absolute dir path or list of WinDir instance.
         :param min_size: any file size greater than this value will return
         :param max_size: any file size less than this value will return
         """
         path_or_path_list = FileCollection._preprocess(path_or_path_list)
-        
+
         def filter(winfile):
             if (winfile.size_on_disk >= min_size) and \
-                (winfile.size_on_disk <= max_size):
+                    (winfile.size_on_disk <= max_size):
                 return True
             else:
                 return False
@@ -926,20 +949,20 @@ class FileCollection(object):
             dir_path = "your/path"
 
             fc = FileCollection.from_path_by_ext(dir_path, ext=[".jpg", ".png"])
-        
+
         :param path_or_path_list: absolute dir path, WinDir instance, list of
           absolute dir path or list of WinDir instance.
         :param ext: select file by extension
         """
         path_or_path_list = FileCollection._preprocess(path_or_path_list)
-        
-        if isinstance(ext, (list, set, dict)): # collection of extension
+
+        if isinstance(ext, (list, set, dict)):  # collection of extension
             def filter(winfile):
                 if winfile.ext in ext:
                     return True
                 else:
                     return False
-        else: # str
+        else:  # str
             def filter(winfile):
                 if winfile.ext == ext:
                     return True
@@ -960,7 +983,7 @@ class FileCollection(object):
         找到与之相同的文件。
         """
         path_or_path_list = FileCollection._preprocess(path_or_path_list)
-        
+
         def filter(winfile):
             if winfile.md5 == md5_value:
                 return True
@@ -988,7 +1011,7 @@ class FileCollection(object):
             for abspath, winfile in self.files.items():
                 d[abspath] = getattr(winfile, attr_name)
             self.order = [item[0] for item in sorted(
-                list(d.items()), key=lambda t: t[1], reverse = reverse)]
+                list(d.items()), key=lambda t: t[1], reverse=reverse)]
         except AttributeError:
             raise ValueError("valid sortable attributes are: "
                              "abspath, dirname, basename, fname, ext, "
@@ -1152,7 +1175,7 @@ class FileCollection(object):
             lines.append("  %s - %s" %
                          (repr_data_size(winfile.size_on_disk), winfile))
         lines.append("Above are files' size greater than %s." %
-              repr_data_size(threshold))
+                     repr_data_size(threshold))
         text = "\n".join(lines)
         print(text)
         with open("__show_big_file__.log", "wb") as f:
@@ -1190,9 +1213,11 @@ class FileCollection(object):
             lines.append("  %s" % winfile)
 
         if filename_only:
-            lines.append("Above are all files that file name contains %s" % pattern)
+            lines.append(
+                "Above are all files that file name contains %s" % pattern)
         else:
-            lines.append("Above are all files that abspath contains %s" % pattern)
+            lines.append(
+                "Above are all files that abspath contains %s" % pattern)
 
         text = "\n".join(lines)
         print(text)
@@ -1214,7 +1239,7 @@ class FileCollection(object):
         文件名。即, 全是空文件, 但目录结构一致。
         """
         src = os.path.abspath(src)
-        if not (os.path.exists(src) and (not os.path.exists(dst)) ):
+        if not (os.path.exists(src) and (not os.path.exists(dst))):
             raise Exception("source not exist or distination already exist")
 
         folder_to_create = list()
@@ -1222,7 +1247,7 @@ class FileCollection(object):
 
         for current_folder, _, file_list in os.walk(src):
             relpath = os.path.relpath(current_folder, src)
-            if relpath == ".": 
+            if relpath == ".":
                 new_folder = dst
             else:
                 new_folder = os.path.join(dst, relpath)
@@ -1257,7 +1282,7 @@ class FileFilter(object):
         """
         if winfile.ext in [".mp3", ".mp4", ".aac", ".m4a", ".wma",
                            ".wav", ".ape", ".tak", ".tta",
-                           ".3gp", ".webm", ".ogg",]:
+                           ".3gp", ".webm", ".ogg", ]:
             return True
         else:
             return False
@@ -1267,8 +1292,8 @@ class FileFilter(object):
         """Video file filter.
         """
         if winfile.ext in [".avi", ".wmv", ".mkv", ".mp4", ".flv",
-                ".vob", ".mov", ".rm", ".rmvb", "3gp", ".3g2", ".nsv", ".webm",
-                ".mpg", ".mpeg", ".m4v", ".iso",]:
+                           ".vob", ".mov", ".rm", ".rmvb", "3gp", ".3g2", ".nsv", ".webm",
+                           ".mpg", ".mpeg", ".m4v", ".iso", ]:
             return True
         else:
             return False
@@ -1308,7 +1333,7 @@ class FileFilter(object):
             return True
         else:
             return False
-        
+
     @staticmethod
     def archive(winfile):
         """Compressed archive file filter.
