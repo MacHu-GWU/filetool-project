@@ -9,7 +9,7 @@ from filetool import winzip
 def test_winzip():
     winzip.zip_a_folder(os.getcwd(), "1.zip")
     winzip.zip_everything_in_a_folder(os.getcwd(), "2.zip")
-    winzip.zip_many_files([os.path.abspath("test_winzip.py")], "3.zip")
+    winzip.zip_many_files([__file__,], "3.zip")
 
 
 if __name__ == "__main__":
