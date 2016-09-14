@@ -17,7 +17,7 @@ from filetool.files import WinFile, WinDir, FileCollection
 def test_initialize():
     """测试WinFile多种初始化方式的实现。
     """
-    winfile = WinFile(__file__.replace("text.txt"))
+    winfile = WinFile(__file__.replace("test_files.py", "test.txt"))
 
     level3_attributes = set([
         "abspath", "dirname", "basename", "fname", "ext",
@@ -57,7 +57,7 @@ def test_str_and_repr():
 def test_rename():
     """测试文件重命名功能。
     """
-    winfile = WinFile(__file__.replace("text.txt"))
+    winfile = WinFile(__file__.replace("test_files.py", "test.txt"))
 
     # 修改文件名为test1
     winfile.rename(new_fname="test1")
@@ -71,13 +71,13 @@ def test_rename():
 
 
 def test_copy():
-    winfile1 = WinFile(__file__.replace("text.txt"))
+    winfile1 = WinFile(__file__.replace("test_files.py", "test.txt"))
     winfile2 = winfile1.copy()
     assert id(winfile1) != id(winfile2)
 
 
 def test_copy_to_and_remove():
-    winfile1 = WinFile(__file__.replace("text.txt"))
+    winfile1 = WinFile(__file__.replace("test_files.py", "test.txt"))
     winfile2 = winfile1.copy()  # create a copy
     winfile2.update(new_fname="test-copy")  # change file name
 
@@ -87,6 +87,7 @@ def test_copy_to_and_remove():
     assert winfile2.isfile() is True  # now exists
     winfile2.delete()  # delete the new file
     assert winfile2.exists() is False  # not exists
+
 
 #--- WinDir ---
 dir_path = __file__.replace("test_files.py", "testdir")
