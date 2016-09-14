@@ -17,3 +17,4 @@ Prerequisites
 __version__ = "0.0.4"
 __short_description__ = "File manipulate tools."
 __author__ = "Sanhe Hu"
+__license__ = "MIT"
