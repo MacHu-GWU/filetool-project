@@ -74,7 +74,7 @@ class WinFile(object):
             self.abspath = os.path.abspath(abspath)
             self.initialize()
         else:
-            raise FileNotFoundError(
+            raise EnvironmentError(
                 "%s is not a file or it doesn't exist." % abspath)
 
     def initialize(self):
@@ -630,7 +630,7 @@ class FileCollection(object):
                 for fname in fnamelist:
                     yield os.path.join(current_folder, fname)
         else:
-            raise FileNotFoundError(
+            raise EnvironmentError(
                 "'%s' may not exists or is not a directory!" % dir_abspath)
 
     @staticmethod
@@ -659,7 +659,7 @@ class FileCollection(object):
                     yield os.path.join(current_folder, fname)
                 break
         else:
-            raise FileNotFoundError(
+            raise EnvironmentError(
                 "'%s' may not exists or is not a directory!" % dir_abspath)
 
     @staticmethod

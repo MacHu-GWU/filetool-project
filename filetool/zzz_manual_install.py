@@ -142,6 +142,8 @@ def check_need_install():
                 if os.path.exists(dst):
                     if md5_of_file(src) != md5_of_file(dst):
                         return True
+                else:
+                    return True
     return need_install_flag
 
 
