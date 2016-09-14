@@ -6,7 +6,7 @@ from filetool.backup import backup_dir
 
 
 def test_backup_dir():
-    root_dir = "testdir"
+    root_dir = __file__.replace("test_backup.py", "testdir")
     ignore_ext = [".txt", ]
     backup_filename = "testdir-backup"
     backup_dir(backup_filename, root_dir, ignore_ext=ignore_ext)
