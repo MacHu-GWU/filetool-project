@@ -3,6 +3,9 @@
 
 """
 filetool.files.py unittest
+
+此测试中出现了多次 __file__, 是因为在unix的测试环境下, 相对路径的解析有些不同, 
+会导致无法定位到测试文件。所以一律采用了相对路径。
 """
 
 import os
@@ -14,14 +17,14 @@ from filetool.files import WinFile, WinDir, FileCollection
 def test_initialize():
     """测试WinFile多种初始化方式的实现。
     """
-    winfile = WinFile("test.txt")
+    winfile = WinFile(__file__.replace("text.txt"))
 
     level3_attributes = set([
         "abspath", "dirname", "basename", "fname", "ext",
         "atime", "ctime", "mtime", "size_on_disk", "md5",
     ])
     WinFile.set_initialize_mode(complexity=3)
-    winfile = WinFile("test_files.py")
+    winfile = WinFile(__file__)
     attributes = set(winfile.to_dict())
     assert attributes == level3_attributes
 
@@ -30,7 +33,7 @@ def test_initialize():
         "atime", "ctime", "mtime", "size_on_disk",
     ])
     WinFile.set_initialize_mode(complexity=2)
-    winfile = WinFile("test_files.py")
+    winfile = WinFile(__file__)
     attributes = set(winfile.to_dict())
     assert attributes == level2_attributes
 
@@ -38,7 +41,7 @@ def test_initialize():
         "abspath", "dirname", "basename", "fname", "ext",
     ])
     WinFile.set_initialize_mode(complexity=1)
-    winfile = WinFile("test_files.py")
+    winfile = WinFile(__file__)
     attributes = set(winfile.to_dict())
     assert attributes == level1_attributes
 
@@ -47,14 +50,14 @@ def test_initialize():
 
 
 def test_str_and_repr():
-    winfile = WinFile("test_files.py")
+    winfile = WinFile(__file__)
     print(repr(winfile))
 
 
 def test_rename():
     """测试文件重命名功能。
     """
-    winfile = WinFile("test.txt")
+    winfile = WinFile(__file__.replace("text.txt"))
 
     # 修改文件名为test1
     winfile.rename(new_fname="test1")
@@ -68,13 +71,13 @@ def test_rename():
 
 
 def test_copy():
-    winfile1 = WinFile("test.txt")
+    winfile1 = WinFile(__file__.replace("text.txt"))
     winfile2 = winfile1.copy()
     assert id(winfile1) != id(winfile2)
 
 
 def test_copy_to_and_remove():
-    winfile1 = WinFile("test.txt")
+    winfile1 = WinFile(__file__.replace("text.txt"))
     winfile2 = winfile1.copy()  # create a copy
     winfile2.update(new_fname="test-copy")  # change file name
 
@@ -86,15 +89,15 @@ def test_copy_to_and_remove():
     assert winfile2.exists() is False  # not exists
 
 #--- WinDir ---
-
+dir_path = __file__.replace("test_files.py", "testdir")
 
 def test_detail():
-    windir = WinDir("testdir")
+    windir = WinDir(dir_path)
     # print(repr(windir))
 
 
 def test_rename():
-    windir = WinDir("testdir")
+    windir = WinDir(dir_path)
 
     # 修改文件夹名为testdir1
     windir.rename(new_basename="testdir1")
@@ -108,9 +111,6 @@ def test_rename():
 
 
 #--- FileCollection ---
-dir_path = __file__.replace("test_files.py", "testdir")
-
-
 def test_yield_file():
     print("{:=^100}".format("yield_all_file_path"))
     for abspath in FileCollection.yield_all_file_path(dir_path):
@@ -235,7 +235,7 @@ def test_from_path_by_ext():
 
 def test_from_path_by_md5():
     WinFile.set_initialize_mode(complexity=3)
-    winfile = WinFile("test_files.py")
+    winfile = WinFile(__file__)
     WinFile.set_initialize_mode(complexity=2)
 
     res = FileCollection.from_path_by_md5(os.getcwd(), winfile.md5)
@@ -246,9 +246,9 @@ def test_add_and_remove():
     """测试添加WinFile和删除WinFile的方法是否正常工作。
     """
     fc = FileCollection()
-    fc.add("test_files.py")
+    fc.add(__file__)
     assert fc.howmany == 1
-    fc.remove("test_files.py")
+    fc.remove(__file__)
     assert fc.howmany == 0
 
 
@@ -272,7 +272,7 @@ def test_add():
     fc1 = FileCollection.from_path(dir_path)
     fc2 = FileCollection.from_path(dir_path)
     fc3 = FileCollection()
-    fc3.add("test_files.py")
+    fc3.add(__file__)
 
     fc = fc1 + fc2 + fc3
     assert fc.howmany == 5
