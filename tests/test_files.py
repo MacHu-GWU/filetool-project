@@ -108,7 +108,7 @@ def test_rename():
 
 
 #--- FileCollection ---
-dir_path = "testdir"
+dir_path = __file__.replace("test_files.py", "testdir")
 
 
 def test_yield_file():
@@ -164,24 +164,21 @@ def test_from_path_by_criterion():
 def test_from_path_except():
     """测试from_path_except方法是否能正常工作。
     """
-    fc = FileCollection.from_path_except(
-        "testdir", ignore=["subfolder", ])
+    fc = FileCollection.from_path_except(dir_path, ignore=["subfolder", ])
     basename_list = [winfile.basename for winfile in fc.iterfiles()]
     basename_list.sort()
     expect = ["root_file.txt", "root_image.jpg"]
     expect.sort()
     assert basename_list == expect
 
-    fc = FileCollection.from_path_except(
-        "testdir", ignore_ext=[".jpg"])
+    fc = FileCollection.from_path_except(dir_path, ignore_ext=[".jpg"])
     basename_list = [winfile.basename for winfile in fc.iterfiles()]
     basename_list.sort()
     expect = ["root_file.txt", "sub_file.txt"]
     expect.sort()
     assert basename_list == expect
 
-    fc = FileCollection.from_path_except(
-        "testdir", ignore_pattern=["image"])
+    fc = FileCollection.from_path_except(dir_path, ignore_pattern=["image"])
     basename_list = [winfile.basename for winfile in fc.iterfiles()]
     basename_list.sort()
     expect = ["root_file.txt", "sub_file.txt"]
@@ -192,8 +189,7 @@ def test_from_path_except():
 def test_from_path_by_pattern():
     """测试from_path_by_pattern方法是否能正常工作。
     """
-    fc = FileCollection.from_path_by_pattern(
-        "testdir", pattern=["sub"])
+    fc = FileCollection.from_path_by_pattern(dir_path, pattern=["sub"])
     basename_list = [winfile.basename for winfile in fc.iterfiles()]
     basename_list.sort()
     expect = ["sub_file.txt", "sub_image.jpg"]
@@ -204,14 +200,14 @@ def test_from_path_by_pattern():
 def test_from_path_by_size():
     """测试from_from_path_by_size方法是否能正常工作。
     """
-    fc = FileCollection.from_path_by_size("testdir", min_size=1024)
+    fc = FileCollection.from_path_by_size(dir_path, min_size=1024)
     basename_list = [winfile.basename for winfile in fc.iterfiles()]
     basename_list.sort()
     expect = ["root_image.jpg", "sub_image.jpg"]
     expect.sort()
     assert basename_list == expect
 
-    fc = FileCollection.from_path_by_size("testdir", max_size=1024)
+    fc = FileCollection.from_path_by_size(dir_path, max_size=1024)
     basename_list = [winfile.basename for winfile in fc.iterfiles()]
     basename_list.sort()
     expect = ["root_file.txt", "sub_file.txt"]
@@ -222,14 +218,14 @@ def test_from_path_by_size():
 def test_from_path_by_ext():
     """测试from_path_by_ext方法是否能正常工作。
     """
-    fc = FileCollection.from_path_by_ext("testdir", ext=".jpg")
+    fc = FileCollection.from_path_by_ext(dir_path, ext=".jpg")
     basename_list = [winfile.basename for winfile in fc.iterfiles()]
     basename_list.sort()
     expect = ["root_image.jpg", "sub_image.jpg"]
     expect.sort()
     assert basename_list == expect
 
-    fc = FileCollection.from_path_by_ext("testdir", ext=[".txt"])
+    fc = FileCollection.from_path_by_ext(dir_path, ext=[".txt"])
     basename_list = [winfile.basename for winfile in fc.iterfiles()]
     basename_list.sort()
     expect = ["root_file.txt", "sub_file.txt"]
@@ -295,8 +291,8 @@ def test_sub():
 
 
 def test_create_fake_mirror():
-    src = "testdir"
-    dst = "testdir_mirror"
+    src = dir_path
+    dst = dir_path.replace("testdir", "testdir_mirror")
     FileCollection.create_fake_mirror(src, dst)
 
 
