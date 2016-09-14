@@ -1,6 +1,7 @@
 Welcome to the filetool Documentation
 =====================================
-Tool set helps you **select, filter, sort, archive** your files.
+Tool set helps you **select, filter, sort, archive， rename, manipulate** your files. Similar to pathlib. If you worry about performance, `this package <https://pypi.python.org/pypi/pathlib_mate>`_ might works.
+
 
 **Quick links**:
 
