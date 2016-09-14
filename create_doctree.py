@@ -1,19 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
-from docfly import Docfly
-import shutil
- 
-try:
-    shutil.rmtree(r"source\filetool")
-except Exception as e:
-    print(e)
-     
-docfly = Docfly("filetool", dst="source", 
+import docfly
+
+# Uncomment this if you follow Sanhe's Sphinx Doc Style Guide
+#--- Manually Made Doc ---
+# doc = docfly.DocTree("source")
+# doc.fly(table_of_content_header="Table of Content (目录)")
+
+#--- Api Reference Doc ---
+package_name = "filetool"
+
+doc = docfly.ApiReferenceDoc(
+    package_name,
+    dst="source",
     ignore=[
-        "filetool.zzz_manual_install.py",
-        "filetool.tests",
+        "%s.packages" % package_name,
+        "%s.zzz_manual_install.py" % package_name,
     ]
 )
-docfly.fly()
+doc.fly()
